@@ -1,10 +1,10 @@
-import Gallery from './Gallery/Gallery';
+import Galley from './Gallery/Gallery'
 
 
 function App() {
   return (
     <div>
-   <Gallery/>
+   <Galley/>
     </div>
   );
 }

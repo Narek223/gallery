@@ -12,12 +12,10 @@ import "./gallery.css";
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
 import Results from '../No results/Results'
+import loading from '../img/3204121 .jpg'
 
 
 const accessKey= process.env.REACT_APP_UNSPLASH_ACCESS_KEY;
-
-
-
 
 export default function Search() {
   let [img, setimg] = useState([]);
@@ -87,6 +85,23 @@ window.scrollTo({
 setscroll(false)
 }
 
+const observer=new IntersectionObserver((obs)=>{
+obs.forEach((elem)=>{
+  if(!elem.isIntersecting){
+    return;
+  }else if(elem.isIntersecting){
+    elem.target.src=elem.target.dataset.src
+   return  observer.unobserve(elem.target)
+  }
+  },{
+    root: null,
+  rootMargin: "0px 0px 500px 0px",
+  threshold: 0
+  })
+      })
+document.querySelectorAll('.im').forEach((elem)=>{
+   return  observer.observe(elem)
+  })
   return (
     <div className="conteiner">
 
@@ -160,18 +175,20 @@ setscroll(false)
   <div className="gallery">
 
     {img.map((elem, index) => {
+      console.log(elem.urls)
       return (
         <img
           key={index}
-          src={elem.urls.regular}
+          src={loading}
+          data-src={elem.urls.regular}
           onClick={() => blog(index)}
+          className='im'
         />
       );
     })}
 
   </div>
 </InfiniteScroll>
-
       )}
  
     </div>

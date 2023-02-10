@@ -4,5 +4,9 @@ body {
   scroll-behavior: smooth;
 
 }
+::selection {
+  color: rgb(0, 0, 0);
+  background: rgb(172, 148, 148);
+}
 
 
