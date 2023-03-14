@@ -1,11 +1,12 @@
 .conteiner{
 height: 10vh;
 position: relative;
+
 }
+
 [data-src]{
   min-height: 50px;
   min-width: 50px;
-
 }
 .search{
     position: fixed;
@@ -78,7 +79,9 @@ border: 1px solid green;
     margin: 10% 5%;
     grid-gap: 15px;
     grid-template-columns:25% 25% 25% 22%;
-    grid-template-rows: max-content;
+    grid-template-rows: max-content;  
+  
+
 }
 .im{
     border-radius: 15px;
@@ -87,12 +90,8 @@ border: 1px solid green;
     height: 100%;
     object-fit: cover;
     cursor:zoom-in;
-
+ 
 }
-
-
-
-
 .load {
     width: 48px;
     height: 48px;
@@ -158,7 +157,17 @@ border-radius: 50px;
   width: 100vw;
   height: 100vh;
   position: fixed;
-background-color:rgba(0, 0, 0, 0.9) ;
+background-color:rgba(0, 0, 0, 0.89) ;
+overflow: hidden;
+z-index: 16;
+cursor: pointer;
+}
+
+
+.blo img{
+
+  user-select: none;
+pointer-events: none; 
 }
 .img{
   width: 50vw;
@@ -166,6 +175,8 @@ background-color:rgba(0, 0, 0, 0.9) ;
   margin: 20vh 25vw;
 background-color: rgb(255, 255, 255);
 border-radius: 15px;
+box-shadow: 8px 2px 50px 19px rgba(190, 175, 175, 0.45);
+cursor: auto;
 }
 .false{
   cursor: pointer;

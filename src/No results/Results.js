@@ -6,7 +6,7 @@ import './res.css'
 export default function Results() {
   return (
     <div className='result'>
-        <img src={no_results}/>
+        <img  src={no_results}/>
     </div>
   )
 }

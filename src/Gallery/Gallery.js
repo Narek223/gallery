@@ -13,13 +13,13 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
 import Results from '../No results/Results'
 import loading from '../img/3204121 .jpg'
-
+import scrollLock from 'scroll-lock'
 
 const accessKey= process.env.REACT_APP_UNSPLASH_ACCESS_KEY;
 
 export default function Search() {
   let [img, setimg] = useState([]);
-  let [val, setval] = useState("3d renders");
+  let [val, setval] = useState("");
   let [page, setpage] = useState(1);
   let [index, setindex] = useState();
   let [bool, setbool] = useState(false);
@@ -38,7 +38,6 @@ let ref= useRef()
     url += `&page=${page}`;
     url += `&client_id=${accessKey}`;
     axios(url).then((res) => {
-      console.log(res)
       settotal(  res.data.total)
       let a = res.data.results ?? res.data;
       if (page === 1) {
@@ -66,14 +65,20 @@ let ref= useRef()
       if(ref.current && !ref.current.contains(e.target))setbool(false)
     }
      document.addEventListener('mousedown',closeblog)
+     bool?scrollLock.disablePageScroll():scrollLock.enablePageScroll()    
+
      return ()=>{
      document.removeEventListener('mousedown',closeblog)
+     scrollLock.clearQueueScrollLocks();
      }
   },[bool])
+
 
 useEffect(()=>{
   if( window.scrollY>=2500){
     setscroll(true)
+  }else{
+    setscroll(false)
   }
 },[page])
 
@@ -85,6 +90,7 @@ window.scrollTo({
 setscroll(false)
 }
 
+
 const observer=new IntersectionObserver((obs)=>{
 obs.forEach((elem)=>{
   if(!elem.isIntersecting){
@@ -95,15 +101,18 @@ obs.forEach((elem)=>{
   }
   },{
     root: null,
-  rootMargin: "0px 0px 500px 0px",
+  rootMargin: "0px 0px 400px 0px",
   threshold: 0
   })
       })
 document.querySelectorAll('.im').forEach((elem)=>{
    return  observer.observe(elem)
   })
+
+ 
+  
   return (
-    <div className="conteiner">
+    <div  className='conteiner'>
 
       <div className="search">
         <form onSubmit={search}>
@@ -118,9 +127,7 @@ document.querySelectorAll('.im').forEach((elem)=>{
           </button>
         </form>
       </div>
-      
       <p className={` ${  scroll?'icon_up':'none'}`} onClick={up}>< FaAngleUp className="up"/></p>
-
       {total===0?(<Results/>):(
   <InfiniteScroll
   dataLength={img.length}
@@ -128,10 +135,9 @@ document.querySelectorAll('.im').forEach((elem)=>{
   hasMore={true}
   loader={<span className="load"></span>}
 >
-  {bool ? (
-    
+  {bool ? (  
+
     <div  className="blo">
-    
       <div  ref={ref}className="img">
         <p onClick={() => setbool(false)} className="false">
           <FaTimes />
@@ -155,7 +161,6 @@ document.querySelectorAll('.im').forEach((elem)=>{
         </p>
         <div className="author">
           <h2>AUTHOR:{img[index].user.first_name}</h2>
-        
           <p>
             <FaCalendar />{" "}
             {new Date(img[index].created_at).toLocaleDateString()}
@@ -173,15 +178,14 @@ document.querySelectorAll('.im').forEach((elem)=>{
   ) : null}
  
   <div className="gallery">
-
     {img.map((elem, index) => {
-      console.log(elem.urls)
       return (
         <img
           key={index}
           src={loading}
           data-src={elem.urls.regular}
           onClick={() => blog(index)}
+          draggable="false"
           className='im'
         />
       );
@@ -190,7 +194,6 @@ document.querySelectorAll('.im').forEach((elem)=>{
   </div>
 </InfiniteScroll>
       )}
- 
     </div>
   );
 }
