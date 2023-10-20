@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect,useRef, useCallback, useMemo} from "react";
 import {
   FaSearch,
   FaAngleLeft,
@@ -27,11 +27,11 @@ export default function Search() {
   let [scroll,setscroll]=useState(false)
 
 let ref= useRef()
-  useEffect(() => {
-    photo();
+
+useEffect(() => {
+    call();
   }, [page]);
 
- 
   function photo() {
     let url = `https://api.unsplash.com/photos?`;
     if (val) url = `https://api.unsplash.com/search/photos?query=${val}`;
@@ -48,6 +48,11 @@ let ref= useRef()
     });
   }
 
+let call=useCallback(()=>{
+ return  photo()
+},[page])
+
+
   let blog = (ind) => {
     setindex(ind);
     setbool(true);
@@ -56,8 +61,7 @@ let ref= useRef()
   let search = (e) => {
     e.preventDefault();
     setpage(1);
-    photo();
-
+    call();
   };
 
   useEffect(()=>{
@@ -75,11 +79,18 @@ let ref= useRef()
 
 
 useEffect(()=>{
-  if( window.scrollY>=2500){
-    setscroll(true)
-  }else{
-    setscroll(false)
-  }
+  const handleScroll = () => {
+    if (window.scrollY >= 4500) {
+      setscroll(true);
+    } else {
+      setscroll(false);
+    }
+  };
+  window.addEventListener('scroll', handleScroll);
+
+  return () => {
+    window.removeEventListener('scroll', handleScroll);
+  };
 },[page])
 
 let up=()=>{
@@ -90,7 +101,6 @@ window.scrollTo({
 setscroll(false)
 }
 
-
 const observer=new IntersectionObserver((obs)=>{
 obs.forEach((elem)=>{
   if(!elem.isIntersecting){
@@ -100,20 +110,17 @@ obs.forEach((elem)=>{
    return  observer.unobserve(elem.target)
   }
   },{
-    root: null,
-  rootMargin: "0px 0px 400px 0px",
-  threshold: 0
+    root: 1,
+  rootMargin: "0px 0px 0px 0px",
+  threshold: 1
   })
       })
 document.querySelectorAll('.im').forEach((elem)=>{
    return  observer.observe(elem)
   })
 
- 
-  
   return (
     <div  className='conteiner'>
-
       <div className="search">
         <form onSubmit={search}>
           <input
@@ -121,6 +128,7 @@ document.querySelectorAll('.im').forEach((elem)=>{
             placeholder="Search"
             value={val}
             onChange={(e) => setval(e.target.value)}
+            spellcheck='true'
           />
           <button type="submit" onClick={search}>
             <FaSearch className="icon"/>
@@ -136,13 +144,13 @@ document.querySelectorAll('.im').forEach((elem)=>{
   loader={<span className="load"></span>}
 >
   {bool ? (  
-
+    
     <div  className="blo">
       <div  ref={ref}className="img">
         <p onClick={() => setbool(false)} className="false">
           <FaTimes />
         </p>
-        <img src={img[index].urls.regular} />
+        <img src={img[index].urls.regular} className="im1" />
         <p
           onClick={() =>
             setindex((index) => (index === 0 ? index += 0 : index - 1))
@@ -186,6 +194,7 @@ document.querySelectorAll('.im').forEach((elem)=>{
           data-src={elem.urls.regular}
           onClick={() => blog(index)}
           draggable="false"
+          loading="lezy"
           className='im'
         />
       );
